@@ -1,0 +1,269 @@
+#+Title: Optic embeds into the Int construction
+#+Author: Elena Di Lavore, Mario Román
+#+latex_class: amsart
+#+latex_class_options: [11pt, dvipsnames]
+#+options: todo:nil toc:nil
+
+* Header                                                                                    :ignore:
+** Header                                                                                  :ignore:
+#+latex_header: \usepackage[a4paper,verbose]{geometry}
+#+latex_header: \geometry{top=3cm,bottom=3cm,left=3cm,right=3cm,textheight=595pt}
+#+latex_header: \setlength{\parskip}{0.3em}
+
+#+latex_header: \usepackage{amsfonts}
+#+latex_header: \usepackage{amssymb}
+#+latex_header: \usepackage{amsthm}
+#+latex_header: \usepackage{amsmath}
+#+latex_header: \usepackage{tipa}
+#+latex_header: \usepackage{caption}
+#+latex_header: \usepackage[dvipsnames]{xcolor}
+#+latex_header: \usepackage[inline]{enumitem}
+#+latex_header: \setlist{itemsep=0em, topsep=0em, parsep=0em}
+#+latex_header: \setlist[enumerate]{label=(\alph*)}
+#+latex_header: \usepackage{etoolbox}
+#+latex_header: \usepackage{stmaryrd} 
+#+latex_header: \usepackage{hyperref}
+#+latex_header: \hypersetup{
+#+latex_header:   colorlinks=true,
+#+latex_header:   linkcolor=[rgb]{0.0,0.27,0.13},
+#+latex_header:   citecolor=[rgb]{0.0,0.27,0.13},
+#+latex_header:   urlcolor=[rgb]{0.0,0.27,0.13}}
+#+latex_header: \usepackage{graphicx}
+#+latex_header: \graphicspath{{assets/}}
+#+latex_header: \usepackage{mathtools}
+#+latex_header: 
+#+latex_header: \usepackage{minted}
+#+latex_header: \usepackage{tikz}
+#+latex_header: \usepackage{float}
+#+latex_header: \usetikzlibrary{
+#+latex_header:   matrix,
+#+latex_header:   arrows,
+#+latex_header:   shapes
+#+latex_header: }
+
+#+latex_header: \usepackage{tikz-cd}
+
+#+latex_header: \usepackage{CJKutf8}\usepackage[utf8]{inputenc} 
+#+latex_header: \newcommand{\hirayo}{\text{\usefont{U}{min}{m}{n}\symbol{'210}}} 
+#+latex_header: \newcommand{\hirata}{\text{\usefont{U}{min}{m}{n}\symbol{'137}}} \DeclareFontFamily{U}{min}{} \DeclareFontShape{U}{min}{m}{n}{<-> udmj30}{}
+
+** AMS packages                                                                            :ignore:
+#+latex_header: \usepackage{amsfonts}
+#+latex_header: \usepackage{amssymb}
+#+latex_header: \usepackage{amsthm}
+#+latex_header: \usepackage{amsmath}
+#+latex_header: \usepackage[margin=1cm]{caption}
+#+latex_header: \allowdisplaybreaks
+
+** Marsden's diagrams                                                                      :ignore:
+# I am using Marsden's diagram macros.
+#+latex_header: \usepackage{macros}
+#+latex_header: \usepackage{diag}
+#+latex_header: \usepackage{eqproof}
+
+#+latex_header: \newcommand{\leftop}{\ensuremath{\operatorname{\lhd}}}
+#+latex_header: \newcommand{\rightop}{\ensuremath{\operatorname{\rhd}}}
+
+#+latex_header: \newcommand{\mvright}[1]{\ensuremath{#1^{\rhd}}}
+#+latex_header: \newcommand{\mvrightright}[1]{\ensuremath{#1^{\rhd\rhd}}}
+#+latex_header: \newcommand{\mvleft}[1]{\ensuremath{#1^{\lhd}}}
+#+latex_header: \newcommand{\mvleftleft}[1]{\ensuremath{#1^{\lhd\lhd}}}
+
+#+latex_header: \newcommand{\adjsql}[1]{\ensuremath{#1_l}}
+#+latex_header: \newcommand{\adjsqr}[1]{\ensuremath{#1_r}}
+
+#+latex_header: \newcommand{\repcontrato}[4]{
+#+latex_header: \path (#1.center) ++(0,-0.5) coordinate (#1-r)
+#+latex_header:      +(-1,1) coordinate (#1-rl)
+#+latex_header:      +(1,1) coordinate (#1-rr);
+#+latex_header: \coordinate (#1-a) at (#1.south);
+#+latex_header: \path
+#+latex_header:  let \p1 = (#1.north) in
+#+latex_header:  let \p2 = (#1-rl) in
+#+latex_header:  let \p3 = (#1-rr) in
+#+latex_header:  coordinate (#1-b) at (\x2, \y1)
+#+latex_header:  coordinate (#1-c) at (\x3, \y1);
+#+latex_header: \fill[catset] (#1.south) -- (#1-r) to[out=0, in=270] (#1-rr) -- (#1-c) -- (#1.north east) -- (#1.south east) -- cycle;
+#+latex_header: \fill[catcop] (#1-b) -- (#1-rl) to[out=270,in=180] (#1-r) to[out=0,in=270] (#1-rr) -- (#1-c) -- cycle;
+#+latex_header: \fill[catterm] (#1.south) -- (#1-r) to[out=180, in=270] (#1-rl) -- (#1-b) -- (#1.north west) -- (#1.south west) -- cycle;
+#+latex_header: \draw (#1-r) to[out=180,in=270] (#1-rl) to node[swap]{#2} (#1-b);
+#+latex_header: \draw (#1-r) to[out=0, in=270] (#1-rr) to node[swap]{#3} (#1-c);
+#+latex_header: \draw (#1-a) to node[swap]{$*$} (#1-r);
+#+latex_header: \strnat{#1-r};
+#+latex_header: \strlabu{#1-r}{#4}
+#+latex_header: }
+#+latex_header: \newcommand{\repcontratoex}[5]{
+#+latex_header: \coordinate[label=below:#2] (#1-b) at (#1.south);
+#+latex_header: \coordinate[label=above:#5] (#1-t) at (#1.north);
+#+latex_header:  \draw (#1-b) -- ++(0,1.5)
+#+latex_header:        (#1-t) -- ++(0,-1.5);
+#+latex_header:  \path (#1.south west) -- ++(0.5,1) coordinate (#1-bl)
+#+latex_header:        (#1.north east) -- ++(-0.5,-1) coordinate (#1-tr);
+#+latex_header:  \node[rectangle, fit=(#1-bl)(#1-tr)] (#1-subdiag) {};
+#+latex_header:  \repcontrato{#1-subdiag}{#2}{#3}{#4};
+#+latex_header:  \draw[very thick] (#1-subdiag.south west) rectangle (#1-subdiag.north east);
+#+latex_header: \begin{pgfonlayer}{background}
+#+latex_header:  \fill[catterm] (#1.south west) rectangle (#1.north);
+#+latex_header:  \fill[catc] (#1.south east) rectangle (#1.north);
+#+latex_header: \end{pgfonlayer}
+#+latex_header: }
+** Theorem styles                                                                          :ignore:
+#+latex_header_extra: \theoremstyle{plain}
+#+latex_header_extra: \newtheorem{theorem}{Theorem}
+#+latex_header_extra: \newtheorem{proposition}[theorem]{Proposition}
+#+latex_header_extra: \newtheorem{question}[theorem]{Question}
+#+latex_header_extra: \newtheorem{requestion}[theorem]{Research Question}
+#+latex_header_extra: \newtheorem{lemma}[theorem]{Lemma}
+#+latex_header_extra: \newtheorem{corollary}[theorem]{Corollary}
+#+latex_header_extra: \theoremstyle{definition}
+#+latex_header_extra: \newtheorem{definition}[theorem]{Definition}
+#+latex_header_extra: \newtheorem{axiom}[theorem]{Axiom}
+#+latex_header_extra: \newtheorem{proofs}{Proof}
+#+latex_header_extra: \theoremstyle{remark}
+#+latex_header_extra: \newtheorem{remark}[theorem]{Remark}
+#+latex_header_extra: \newtheorem{exampleth}[theorem]{Example}
+#+latex_header_extra: \begingroup\makeatletter\@for\theoremstyle:=definition,remark,plain\do{\expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{\addtolength\thm@preskip\parskip}}\endgroup
+
+** Macros                                                                                  :ignore:
+#+latex_header: \newcommand{\R}{{\cal{R}}}
+#+latex_header: \newcommand{\Class}{\mathbf{S}}
+
+#+latex_header: \newcommand{\nto}{\nrightarrow}
+
+#+latex_header: \newcommand{\iam}[1]{
+#+latex_header:   \vspace{0.25em}
+#+latex_header:   \hrule
+#+latex_header:   \vspace{0.25em}
+#+latex_header:   \textbf{{#1} writes: }
+#+latex_header:   \vspace{0.25em}
+#+latex_header:   \hrule
+#+latex_header:   \vspace{1em}
+#+latex_header: }
+
+#+latex_header: \newcommand{\respond}[2]{\quad[\textbf{#1 says:} {\color{ForestGreen} #2}]\quad}
+#+latex_header: \newenvironment{note}{\quad\color{ForestGreen}\textbf{Note:} \begingroup\itshape}{\endgroup\quad}
+
+#+latex_header: \usepackage{mathtools}
+#+latex_header: \newcommand\id{\mathrm{id}}
+#+latex_header: \newcommand\dinat{\overset{\cdot\cdot}\to}
+#+latex_header: \newcommand\Id{\mathrm{Id}}
+#+latex_header: \newcommand\Nat{\mathrm{Nat}}
+#+latex_header: \newcommand\Grp{\mathsf{Grp}}
+#+latex_header: \newcommand\Set{\mathsf{Set}}
+#+latex_header: \newcommand\zet{\mathbb{Z}}
+#+latex_header: \newcommand\nat{\mathbb{N}}
+#+latex_header: \newcommand\lensto{\nrightarrow}
+#+latex_header: \newcommand\rat{\mathbb{Q}}
+#+latex_header: \newcommand\reals{\mathbb{R}}
+#+latex_header: \newcommand\com{\mathbb{C}}
+#+latex_header: \newcommand\hC{\widehat{\cal C}}
+#+latex_header: \newcommand\todot{\xrightarrow{.}}
+#+latex_header: \newcommand\tonat{\Rightarrow}
+#+latex_header: \newcommand\shape{\mbox{\textesh}}
+#+latex_header: \usepackage{mathtools}
+#+latex_header: \DeclarePairedDelimiter\pair{\langle}{\rangle}
+
+#+latex_header: \DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+#+latex_header: \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+#+latex_header: \DeclarePairedDelimiter\brck{\llbracket}{\rrbracket}%
+
+#+latex_header: \newcommand\opticmorph[4]{\begin{pmatrix}#1 \\ #2\end{pmatrix} \to \begin{pmatrix}#3 \\ #4\end{pmatrix}}
+
+* Macros                                                                                    :ignore:
+#+latex_header: \newcommand{\repl}{\mathrm{repl}}
+#+latex_header: \newcommand{\img}{\mathrm{img}}
+#+latex_header: \newcommand{\App}{\mathbf{App}}
+
+#+latex_header: \newcommand{\optic}[2]{\langle #1 \mid #2 \rangle}
+#+latex_header: \newcommand{\trv}{\operatorname{trv}}
+#+latex_header: \newcommand{\Optic}{\mathbf{Optic}}
+#+latex_header: \newcommand{\Sets}{\mathbf{Sets}}
+#+latex_header: \newcommand{\Lan}{\mathsf{Lan}}
+#+latex_header: \newcommand{\Ran}{\mathsf{Ran}}
+#+latex_header: \newcommand{\Nat}{\mathrm{Nat}}
+
+#+latex_header: \newcommand{\Prof}{\mathbf{Prof}}
+#+latex_header: \newcommand{\C}{{\mathcal{C}}}
+#+latex_header: \newcommand{\D}{\mathbf{D}}
+#+latex_header: \newcommand{\M}{\mathbf{M}}
+#+latex_header: \newcommand{\N}{\mathbf{N}}
+#+latex_header: \newcommand{\mact}{\underline{m}}
+#+latex_header: \newcommand{\nact}{\underline{n}}
+#+latex_header: \newcommand{\iact}{\underline{i}}
+#+latex_header: \newcommand{\kact}{\underline{k}}
+
+#+latex_header: \newcommand{\nto}{\nrightarrow}
+#+latex_header: \newcommand\id{\mathrm{id}}
+#+latex_header: \newcommand\dinat{\overset{\cdot\cdot}\to}
+#+latex_header: \newcommand\Id{\mathrm{Id}}
+#+latex_header: \newcommand\Nat{\mathrm{Nat}}
+#+latex_header: \newcommand\Grp{\mathsf{Grp}}
+#+latex_header: \newcommand\Set{\mathsf{Set}}
+#+latex_header: \newcommand\zet{\mathbb{Z}}
+#+latex_header: \newcommand\nat{\mathbb{N}}
+#+latex_header: \newcommand\lensto{\nrightarrow}
+#+latex_header: \newcommand\rat{\mathbb{Q}}
+#+latex_header: \newcommand\reals{\mathbb{R}}
+#+latex_header: \newcommand\com{\mathbb{C}}
+#+latex_header: \newcommand\hC{\widehat{\cal C}}
+#+latex_header: \newcommand\todot{\xrightarrow{.}}
+#+latex_header: \newcommand\tonat{\Rightarrow}
+#+latex_header: \newcommand\shape{\mbox{\textesh}}
+#+latex_header: \newcommand\Vcat{\cal{V}\mbox{-category}}
+#+latex_header: \newcommand\Vfunctor{\cal{V}\mbox{-functor}}
+#+latex_header: \newcommand\Vt[1]{\cal{V}\mbox{-#1}}
+#+latex_header: \newcommand\V{{\cal{V}}}
+#+latex_header: \newcommand\opticmorph[4]{\begin{pmatrix}#1 \\ #2\end{pmatrix} \to \begin{pmatrix}#3 \\ #4\end{pmatrix}}
+
+#+latex_header: \DeclarePairedDelimiter\pair{\langle}{\rangle}
+#+latex_header: \DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+#+latex_header: \DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+#+latex_header: \DeclarePairedDelimiter\brck{\llbracket}{\rrbracket}%
+
+#+latex_header: \newcommand\diset[2]{\binom{#1}{#2}}
+
+* Optic embeds into the Int construction                                                    :ignore:
+On this note we use Riley's definition of $\Optic$ [[cite:riley18][definition 2.0.1]].
+Let $\C$ be a symmetric monoidal category, an optic $\diset{X}{S}\to \diset{Y}{R}$ is given by 
+an element of the set
+\[
+\int^{M \in \C} \C(X, M \otimes Y) \times \C(M \otimes R , S)
+\]
+whose elements are pairs of morphisms $\left\langle l \mid r \right\rangle$ for $l \colon X \to M \otimes Y$
+and $r \colon M \otimes R \to S$ quotiented by the equivalence relation generated
+by $\left\langle (f \otimes Y) \circ l \mid r \right\rangle \sim \left\langle l \mid r \circ (f \otimes R) \right\rangle$ for any $f \colon M \to N$.
+
+#+begin_proposition
+Let $\C{}$ be a symmetric traced category [[cite:selinger10][\S5.7]].
+There is a strict monoidal functor $-^{\ast} \colon \mathbf{Optic}(\C) \to\mathbf{Int}(\C)$, which is the
+identity on objects and takes an optic $\lambda \colon \diset{X}{S} \to \diset{Y}{R}$ given by $\left\langle \lambda_l \mid \lambda_r \right\rangle$ to
+#+latex: \begin{center}\includegraphics[width=4cm]{opticint/diagram1.pdf}\end{center}
+where this morphism is well-defined because it is dinatural on the /residual/ of the optic.
+#+end_proposition
+#+begin_proof
+The identity morphism $\diset{X}{S}\to \diset{X}{S}$ of $\mathbf{Optic}(\C)$ is sent to
+#+latex: \begin{center}\includegraphics[width=4cm]{opticint/diagram2.pdf}\end{center}
+which is equal to the identity on $X \times S$. This is the identity
+morphism $\diset{X}{S}\to \diset{X}{S}$ of $\mathbf{Int}(\C)$.
+
+Next, consider morphisms $\lambda \colon \diset{X}{S} \to \diset{Y}{R}$ and $\mu \colon \diset{Y}{R} \to \diset{Z}{Q}$ in $\mathbf{Optic}(\C)$. 
+If we compose them in $\mathbf{Int}(\C)$ we obtain the morphism $\mu^{\ast} \circ \lambda^{\ast}$ with
+string diagram
+#+latex: \begin{center}\includegraphics[width=6.5cm]{opticint/diagram3.pdf}\end{center}
+Using the symmetric traced structure of $\C$, we can transform this into
+the morphism $(\mu \circ \lambda)^{\ast}$ with the following manipulations of the string
+diagram, which yield the equality of the two morphisms via the
+coherence theorem for traced symmetric monoidal categories [[cite:selinger10][theorem 5.22]].
+#+latex: \begin{center}\includegraphics[width=7cm]{opticint/diagram4.pdf}\end{center}
+Finally, it can be seen that the functor is strict monoidal.
+#+end_proof
+
+The embedding in Proposition 1 particularizes to the embedding by
+Hedges cite:hedges19 for the case of traced cartesian categories.
+In that case, the first component of the optic can always be written as
+the comultiplication of the cartesian structure.
+
+* References                                                                                :ignore:
+bibliographystyle:alpha
+bibliography:../optics.bib
+
